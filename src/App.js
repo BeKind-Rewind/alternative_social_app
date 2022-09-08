@@ -3,6 +3,8 @@ import axios from 'axios'
 
 import './App.css'
 
+//this is an async function
+
 async function postImage({image, description}) {
   const formData = new FormData();
   formData.append("image", image)
