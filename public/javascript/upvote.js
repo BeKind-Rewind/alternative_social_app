@@ -7,7 +7,7 @@ async function upvoteClickHandler(event) {
   const response = await fetch('/api/posts/upvote', {
     method: 'PUT',
     body: JSON.stringify({
-      post_id: id
+      post_id: id //content?
     }),
     headers: {
       'Content-Type': 'application/json'
