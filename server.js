@@ -11,6 +11,9 @@ const unlinkFile = util.promisify(fs.unlink)
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 const { uploadFile, getFileStream } = require('./s3')
+
+const app = express();
+
 app.get('/images/:key', (req, res) => {
   console.log(req.params)
   const key = req.params.key
@@ -30,7 +33,7 @@ app.post('/images', upload.single('image'), async (req, res) => {
   res.send({imagePath: `/images/${result.Key}`})
 })
 
-const app = express();
+
 const PORT = process.env.PORT || 3001;
 
 
