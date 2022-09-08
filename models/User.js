@@ -35,13 +35,13 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [4]
+        len: [4] //Password requirement length
       }
     }
   },
   {
     hooks: {
-      // Hashing the password "bcyrpt" user input inbformation with npm package.
+      // Hashing user password w/ "bcyrpt" package.
       async beforeCreate(newUserData) {
         newUserData.password = await bcrypt.hash(newUserData.password, 10);
         return newUserData;

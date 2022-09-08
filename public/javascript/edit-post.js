@@ -1,3 +1,4 @@
+//Editing post functionaility; content needs to be able to be edited, havent tested.
 async function editFormHandler(event) {
   event.preventDefault();
 

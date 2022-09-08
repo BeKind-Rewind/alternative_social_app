@@ -1,13 +1,10 @@
 const path = require('path');
 const express = require('express');
-// sets up an Express session and connects the session to our Sequelize db
 const session = require('express-session');
-// set up Handlebars.js as app's template engine of choice
 const exphbs = require('express-handlebars');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
 
 // importing the connection to sequelize from config/connection.js
 const sequelize = require('./config/connection');

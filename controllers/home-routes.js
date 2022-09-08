@@ -51,7 +51,7 @@ router.get('/post/:id', (req, res) => {
     },
     attributes: [
       'id',
-      'content', //*THIS IS ODD TO ME ORDER WISE
+      'content', //*THIS IS ODD TO ME "ORDER" WISE ; leave alone if working
       'post_url',
       'title',
       'created_at',

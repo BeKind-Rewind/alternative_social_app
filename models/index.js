@@ -51,7 +51,7 @@ Post.hasMany(Vote, {
 Comment.belongsTo(User, {
   foreignKey: 'user_id',
   onDelete: 'SET NULL',
-  //onDelete: "cascade" POSSIBLE
+  //onDelete: "cascade" POSSIBLE**
 });
 
 Comment.belongsTo(Post, {

@@ -1,3 +1,4 @@
+//UPVOTE ; no issues here.
 async function upvoteClickHandler(event) {
   event.preventDefault();
 
@@ -7,7 +8,7 @@ async function upvoteClickHandler(event) {
   const response = await fetch('/api/posts/upvote', {
     method: 'PUT',
     body: JSON.stringify({
-      post_id: id //content?
+      post_id: id
     }),
     headers: {
       'Content-Type': 'application/json'

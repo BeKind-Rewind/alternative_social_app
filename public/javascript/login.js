@@ -1,3 +1,4 @@
+//LOGGING IN function 
 async function loginFormHandler(event) {
   event.preventDefault();
 
@@ -21,7 +22,7 @@ async function loginFormHandler(event) {
     }
   }
 }
-
+// SIGNING UP
 async function signupFormHandler(event) {
   event.preventDefault();
 
@@ -50,5 +51,4 @@ async function signupFormHandler(event) {
 
 document.querySelector('.login-form').addEventListener('submit', loginFormHandler);
 document.querySelector('.signup-form').addEventListener('submit', signupFormHandler);
-//# or .
 
