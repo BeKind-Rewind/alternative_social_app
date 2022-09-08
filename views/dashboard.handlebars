@@ -6,6 +6,15 @@
       <label for="post-title">Title</label>
       <input type="text" id="post-title" name="post-title" />
     </div>
+
+   <div class="form-floating mb-3">
+            {{!-- Content of Post, value used in JavaScript --}}
+            <label class="form-label" for="content" ></label>
+            <textarea id="content" name="content" class="form-input w-100" aria-label="With textarea"
+                autofocus="true" placeholder="What's on your mind?"></textarea>
+        </div>
+
+<script src="/js/add-post.js"></script>
     <div>
       <label for="post-url">Link</label>
       <input id="post-url" name="post-url" />

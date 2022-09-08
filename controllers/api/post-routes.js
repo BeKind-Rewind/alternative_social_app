@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
       'id',
       'post_url',
       'title',
+      'content',
       'created_at',
       [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
     ],
@@ -43,6 +44,7 @@ router.get('/:id', (req, res) => {
     },
     attributes: [
       'id',
+      'content',
       'post_url',
       'title',
       'created_at',
@@ -80,6 +82,7 @@ router.post('/', withAuth, (req, res) => {
   // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}
   Post.create({
     title: req.body.title,
+    content: req.body.content.content,
     post_url: req.body.post_url,
     user_id: req.session.user_id
   })
@@ -103,7 +106,8 @@ router.put('/upvote', withAuth, (req, res) => {
 router.put('/:id', withAuth, (req, res) => {
   Post.update(
     {
-      title: req.body.title
+      title: req.body.title,
+      content: req.body.content
     },
     {
       where: {
