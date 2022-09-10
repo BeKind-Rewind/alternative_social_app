@@ -4,14 +4,15 @@ const session = require('express-session');
 const exphbs = require('express-handlebars');
 const fileUpload = ('express-fileupload')
 
+const app = express();
 const PORT = process.env.PORT || 3001;
 
-//Profile picture
-app.use(fileUpload());
+// //Profile picture
+// app.use(fileUpload());
 
-// Static Files
-app.use(express.static('public'));
-app.use(express.static('upload'));
+// // Static Files
+// app.use(express.static('public'));
+// app.use(express.static('upload'));
 
 
 // importing the connection to sequelize from config/connection.js
