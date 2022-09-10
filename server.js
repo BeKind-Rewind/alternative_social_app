@@ -1,12 +1,17 @@
 const path = require('path');
 const express = require('express');
-// sets up an Express session and connects the session to our Sequelize db
 const session = require('express-session');
-// set up Handlebars.js as app's template engine of choice
 const exphbs = require('express-handlebars');
 const fileUpload = ('express-fileupload')
 
 const PORT = process.env.PORT || 3001;
+
+//Profile picture
+app.use(fileUpload());
+
+// Static Files
+app.use(express.static('public'));
+app.use(express.static('upload'));
 
 
 // importing the connection to sequelize from config/connection.js
