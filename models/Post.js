@@ -7,30 +7,31 @@ class Post extends Model {
       user_id: body.user_id,
       post_id: body.post_id
     }).then(() => {
-    return Post.findOne({
-      where: {
-        id: body.post_id
-      },
-      attributes: [
-        'id',
-        'post_url',
-        //ADD content?
-        'title',
-        'created_at',
-        [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
-      ],
-      include: [
-      {
-        model: models.Comment,
-        attributes: ['id','comment_text', 'post_id', 'user_id', 'created_at'], //content ?
-        include: {
-          model: models.User,
-          attributes: ['username']
-        }
-      }]
+      return Post.findOne({
+        where: {
+          id: body.post_id
+        },
+        attributes: [
+          'id',
+          'post_url',
+          //ADD content?
+          'title',
+          'created_at',
+          [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
+        ],
+        include: [
+          {
+            model: models.Comment,
+            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'], //content ?
+            include: {
+              model: models.User,
+              attributes: ['username']
+            }
+          }]
+      });
     });
-  });
-}};
+  }
+};
 
 // create fields/columns for Post model
 // ** Change URL requirement; maybe?
@@ -46,15 +47,19 @@ Post.init(
       type: DataTypes.STRING,
       allowNull: false
     },
-    content:{
+    content: {
       type: DataTypes.TEXT, //ADDED
-      allowNull:false
+      allowNull: false
     },
+    // image:{
+    //   type: DataTypes.TEXT, //ADDED
+    //   allowNull:true
+    // },
     post_url: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isURL: true 
+        isURL: true
       }
     },
     user_id: {
