@@ -4,35 +4,7 @@ const express = require('express');
 const session = require('express-session');
 // set up Handlebars.js as app's template engine of choice
 const exphbs = require('express-handlebars');
-
-const fs = require('fs')
-const util = require('util')
-const unlinkFile = util.promisify(fs.unlink)
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-const { uploadFile, getFileStream } = require('./s3')
-
-const app = express();
-
-app.get('/images/:key', (req, res) => {
-  console.log(req.params)
-  const key = req.params.key
-  const readStream = getFileStream(key)
-
-  readStream.pipe(res)
-})
-
-app.post('/images', upload.single('image'), async (req, res) => {
-  const file = req.file
-  console.log(file)
-  // future: apply filter or resize
-  const result = await uploadFile(file)
-  await unlinkFile(file.path)
-  console.log(result)
-  const description = req.body.description
-  res.send({imagePath: `/images/${result.Key}`})
-})
-
+const fileUpload = ('express-fileupload')
 
 const PORT = process.env.PORT || 3001;
 
@@ -42,15 +14,15 @@ const sequelize = require('./config/connection');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const sess = {
-    secret: 'Super secret secret', // replace with actual secret to store in .env
-    cookie: {}, // tells our session to use cookies
-    resave: false,
-    saveUninitialized: true,
-    store: new SequelizeStore({
-      db: sequelize
-    })
+  secret: 'Super secret secret', // replace with actual secret to store in .env
+  cookie: {}, // tells our session to use cookies
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize
+  })
 };
-  
+
 app.use(session(sess));
 
 const helpers = require('./utils/helpers');
@@ -67,5 +39,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('./controllers/'));
 
 sequelize.sync({ force: false }).then(() => {
-    app.listen(PORT, () => console.log('Now listening'));
+  app.listen(PORT, () => console.log('Now listening'));
 });
