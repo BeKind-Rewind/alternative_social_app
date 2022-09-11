@@ -5,13 +5,15 @@ async function newFormHandler(event) {
   const title = document.querySelector('input[name="post-title"]').value;
   const content = document.querySelector('textarea[name="content"]').value; //*
   const post_url = document.querySelector('input[name="post-url"]').value;
+  const fileUpload = document.querySelector('file[name="sampleFile"]').value; // Don't know if this is right
 
   const response = await fetch(`/api/posts`, {
     method: 'POST',
     body: JSON.stringify({
       title,
       content, //*
-      post_url
+      post_url,
+      sampleFile
     }),
     headers: {
       'Content-Type': 'application/json'

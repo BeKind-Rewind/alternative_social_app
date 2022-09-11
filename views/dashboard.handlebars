@@ -6,17 +6,17 @@
       <label for="post-title">Title</label>
       <input type="text" id="post-title" name="post-title" />
     </div>
-    {{!-- AREA FOR TEXT CONTENT BOX --}}
+    {{!-- TEXT CONTENT BOX --}}
     <div class="content">
       <label class="form-label" for="content"></label>
       <textarea id="content" name="content" class="form-input w-100" aria-label="With textarea" autofocus="true"
         placeholder="What's on your mind?"></textarea>
     </div>
-    {{!-- Upload profile image--}}
-    <div>
 
-      <form class="img" id="img" method="POST" action="/upload" enctype="multipart/form-data">
-        <h2>Upload Image</h2>
+    {{!-- Upload image *****???*****--}}
+    <div>
+      <label for="sampleFile">Upload Image</label>
+      <form id="sampleFile" method="POST" action="/upload" enctype="multipart/form-data">
         <input type="file" name="sampleFile" accept="image/*">
       </form>
     </div>
