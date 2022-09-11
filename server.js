@@ -1,40 +1,49 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 // sets up an Express session and connects the session to our Sequelize db
 const session = require('express-session');
 // set up Handlebars.js as app's template engine of choice
 const exphbs = require('express-handlebars');
+const fileUpload = require('express-fileupload');
 
-const fs = require('fs')
-const util = require('util')
-const unlinkFile = util.promisify(fs.unlink)
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-const { uploadFile, getFileStream } = require('./s3')
 
 const app = express();
-
-app.get('/images/:key', (req, res) => {
-  console.log(req.params)
-  const key = req.params.key
-  const readStream = getFileStream(key)
-
-  readStream.pipe(res)
-})
-
-app.post('/images', upload.single('image'), async (req, res) => {
-  const file = req.file
-  console.log(file)
-  // future: apply filter or resize
-  const result = await uploadFile(file)
-  await unlinkFile(file.path)
-  console.log(result)
-  const description = req.body.description
-  res.send({imagePath: `/images/${result.Key}`})
-})
-
-
 const PORT = process.env.PORT || 3001;
+
+// default option
+app.use(fileUpload({ useTempFiles: true}));
+
+const helpers = require('./utils/helpers');
+const hbs = exphbs.create({ helpers });
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+const cloudinary = require('cloudinary');
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET 
+});
+
+app.post('/api/users/profile', (req, res)=>{
+  const profilePicture = req.files?.profilePicture;
+  if(!profilePicture) {
+    return res.status(400).send('No files were uploaded.')
+  }
+  console.log(profilePicture);
+  cloudinary.v2.uploader.upload(profilePicture.tempFilePath)
+    .then((response) => {
+      console.log(response.url);
+      res.send('Successful!');
+    })
+    .catch((err)=>{
+      console.error(err);
+      res.status(500).send('Didnt work');
+    })
+});
 
 
 // importing the connection to sequelize from config/connection.js
@@ -53,16 +62,11 @@ const sess = {
   
 app.use(session(sess));
 
-const helpers = require('./utils/helpers');
-const hbs = exphbs.create({ helpers });
-
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('upload'));
 
 app.use(require('./controllers/'));
 

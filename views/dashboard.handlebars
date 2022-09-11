@@ -1,4 +1,10 @@
 {{!-- Page you create post // Important page --}}
+<form action="/api/users/profile" method="post" enctype="multipart/form-data">
+  <h3>Upload Profile Photo</h3>
+  <input type="file" name="profilePicture" accept="image/*" />
+  <input type="submit" class="btn btn-primary">
+</form>
+
 <section>
   <h2>Create New Post</h2>
   <form class="new-post-form">
