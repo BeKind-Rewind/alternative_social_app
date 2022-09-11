@@ -12,11 +12,13 @@
       <textarea id="content" name="content" class="form-input w-100" aria-label="With textarea" autofocus="true"
         placeholder="What's on your mind?"></textarea>
     </div>
-    {{!-- Upload image --}}
+    {{!-- Upload profile image--}}
     <div>
-      <h2>Upload Image</h2>
-      <form method="POST" action="/upload" enctype="multipart/form-data"></form>
-      <input type="file" name="image">
+
+      <form class="img" id="img" method="POST" action="/upload" enctype="multipart/form-data">
+        <h2>Upload Image</h2>
+        <input type="file" name="sampleFile" accept="image/*">
+      </form>
     </div>
 
     <div>
