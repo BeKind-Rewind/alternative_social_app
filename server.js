@@ -5,7 +5,7 @@ const express = require('express');
 const session = require('express-session');
 // set up Handlebars.js as app's template engine of choice
 const exphbs = require('express-handlebars');
-const fileUpload = require('express-fileupload');
+// const fileUpload = require('express-fileupload');
 
 
 const app = express();
