@@ -13,28 +13,27 @@ class Post extends Model {
         },
         attributes: [
           'id',
-          'post_url',
-          //ADD content?
           'title',
+          'post_url',
           'created_at',
           [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
         ],
         include: [
           {
             model: models.Comment,
-            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'], //content ?
+            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
             include: {
               model: models.User,
               attributes: ['username']
             }
-          }]
+          }
+        ]
       });
     });
   }
-};
+}
 
 // create fields/columns for Post model
-// ** Change URL requirement; maybe?
 Post.init(
   {
     id: {
@@ -53,7 +52,7 @@ Post.init(
     },
     post_url: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       validate: {
         isURL: true
       }

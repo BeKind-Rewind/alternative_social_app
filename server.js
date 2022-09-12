@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const path = require('path');
 const express = require('express');
 // sets up an Express session and connects the session to our Sequelize db
