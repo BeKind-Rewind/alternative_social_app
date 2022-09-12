@@ -1,4 +1,10 @@
 {{!-- Page you create post // Important page --}}
+<form action="/api/users/profile" method="post" enctype="multipart/form-data">
+  <h3>Upload Profile Photo</h3>
+  <input type="file" name="profilePicture" accept="image/*" />
+  <input type="submit" class="btn btn-primary">
+</form>
+
 <section>
   <h2>Create New Post</h2>
   <form class="new-post-form">
@@ -12,18 +18,7 @@
       <textarea id="content" name="content" class="form-input w-100" aria-label="With textarea"
       autofocus="true" placeholder="What's on your mind?"></textarea>
     </div>
-     {{!-- Upload image --}}
-    <div>
-      <h2>Upload Image</h2>
-      <form method="POST" action="/upload" enctype="multipart/form-data"></form>
-        <input type="file" name="image">
-    </div>
-   
-    <div>
-      <label for="post-url">Link</label>
-      <input id="post-url" name="post-url" />
-    </div>
-    <button type="submit" class="btn">Create</button>
+    <input type="submit" class="btn btn-primary">
   </form>
 </section>
 
