@@ -18,6 +18,10 @@ img {
   width: 100%;
 }
 
+.butterfly {
+  width: 8%;
+}
+
 a {
   text-decoration: none;
   font-weight: bold;
@@ -137,6 +141,8 @@ main {
 .card__job {
   color: #6e8192;
 }
+
+
 
 .btn-no-style {
   background: none;

@@ -16,10 +16,12 @@
   <div class="wrapper">
     <header class="navbar">
       <h1 class="navbar-brand">
-        <a href="/">Alternative Social</a> <img src="https://img.icons8.com/metro/26/000000/butterfly.png" />
+        <a href="/">Alternative Social</a><img class="butterfly"
+          src="https://img.icons8.com/metro/26/000000/butterfly.png" />
       </h1>
       <nav>
         {{#if loggedIn}}
+        <img class="card__image" src="/img/default.png" alt="User Profile" text="${{username}}">
         <a href="/dashboard">dashboard</a>
         <button id="logout" class="btn-no-style">logout</button>
         {{else}}
