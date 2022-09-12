@@ -51,10 +51,6 @@ Post.init(
       type: DataTypes.TEXT, //ADDED
       allowNull: false
     },
-    // image:{
-    //   type: DataTypes.TEXT, //ADDED
-    //   allowNull:true
-    // },
     post_url: {
       type: DataTypes.STRING,
       allowNull: true,

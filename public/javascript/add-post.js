@@ -1,19 +1,16 @@
-//Javascript for adding post
 async function newFormHandler(event) {
   event.preventDefault();
 
   const title = document.querySelector('input[name="post-title"]').value;
   const content = document.querySelector('textarea[name="content"]').value; //*
   const post_url = document.querySelector('input[name="post-url"]').value;
-  const fileUpload = document.querySelector('file[name="sampleFile"]').value; // Don't know if this is right
 
   const response = await fetch(`/api/posts`, {
     method: 'POST',
     body: JSON.stringify({
       title,
-      content, //*
-      post_url,
-      sampleFile
+      content,
+      post_url
     }),
     headers: {
       'Content-Type': 'application/json'
@@ -21,7 +18,8 @@ async function newFormHandler(event) {
   });
 
   if (response.ok) {
-    document.location.replace('/dashboard');
+    console.log(response)
+    // document.location.replace('/dashboard');
   } else {
     alert(response.statusText);
   }

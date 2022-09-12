@@ -5,6 +5,9 @@
 ## Description
 SocialMedia Application gathering point to post, discuss and promote all things tech. Once account is created, users are able to create posts and view from their own dashboard. Users may also make and read comments made by others as well as promote up-standing, interesting, and helpful information that benefits the community.
 
+Deployed App:
+https://intense-stream-74213.herokuapp.com/ 
+
 ## Table of Contents
   - [Usage](#usage)
   - [Tests](#tests)
@@ -18,7 +21,7 @@ SocialMedia Application gathering point to post, discuss and promote all things 
 
 
 ## Usage
-Users can post and see posts by others; tag topics of discussion; comment and upvote other's posts. This application uses node.js packages: express, express-handlebars, express-session, connect-session-sequelize, sequelize, mysql2, dotenv, and bcrypt
+Users can post and see posts by others; tag topics of discussion; comment and upvote other's posts. This application uses node.js packages: express, express-handlebars, express-session, connect-session-sequelize, sequelize, mysql2, dotenv, bcrypt, aws-sdk(s3 Bucket), multer. 
 
 
 

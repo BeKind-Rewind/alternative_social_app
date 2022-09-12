@@ -9,9 +9,10 @@ router.get('/', (req, res) => {
   Post.findAll({
     attributes: [
       'id',
-      'post_url',
       'title',
-      'content', //*
+      'content',
+      'image',
+      'post_url',
       'created_at',
       [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
     ],
@@ -46,7 +47,6 @@ router.get('/:id', (req, res) => {
       'id',
       'content', //*
       'post_url',
-      'title',
       'created_at',
       [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
     ],
@@ -81,7 +81,8 @@ router.get('/:id', (req, res) => {
 router.post('/', withAuth, (req, res) => {
   Post.create({
     title: req.body.title,
-    content: req.body.content, //*
+    content: req.body.content,
+    image: req.body.image,
     post_url: req.body.post_url,
     user_id: req.session.user_id
   })

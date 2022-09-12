@@ -1,11 +1,50 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
+// sets up an Express session and connects the session to our Sequelize db
 const session = require('express-session');
+// set up Handlebars.js as app's template engine of choice
 const exphbs = require('express-handlebars');
 const fileUpload = require('express-fileupload');
 
+
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// default option
+app.use(fileUpload({ useTempFiles: true }));
+
+const helpers = require('./utils/helpers');
+const hbs = exphbs.create({ helpers });
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+const cloudinary = require('cloudinary');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+});
+
+app.post('/api/users/profile', (req, res) => {
+  const profilePicture = req.files?.profilePicture;
+  if (!profilePicture) {
+    return res.status(400).send('No files were uploaded.')
+  }
+  console.log(profilePicture);
+  cloudinary.v2.uploader.upload(profilePicture.tempFilePath)
+    .then((response) => {
+      console.log(response.url);
+      res.send('Successful!');
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Didnt work');
+    })
+});
+
 
 // importing the connection to sequelize from config/connection.js
 const sequelize = require('./config/connection');
@@ -22,44 +61,12 @@ const sess = {
 };
 
 app.use(session(sess));
-app.use(fileUpload()); //* image upload
 
-const helpers = require('./utils/helpers');
-const hbs = exphbs.create({ helpers });
-
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-
-// photo related**
-// app.get('/', (req, res) => {
-//   res.render('');
-// });
-
-// photo upload**
-app.post('', (req, res) => {
-  let sampleFile;
-  let uploadPath;
-
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
-
-  sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + '/upload/' + sampleFile.name;
-
-  console.log(sampleFile);
-
-  sampleFile.mv(uploadPath, function (err) {
-    if (err) return res.status(500).send(err);
-
-    res.send('FILE UPLOADED!');
-
-  })
-});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('upload'));
 
 app.use(require('./controllers/'));
 
