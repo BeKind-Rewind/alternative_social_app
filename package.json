@@ -1,11 +1,11 @@
 {
   "name": "alt_soc_app",
   "version": "1.0.0",
-  "description": "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "seeds": "node seeds/index.js"
   },
   "repository": {
@@ -29,10 +29,6 @@
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.3",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.21.4",
-    "nodemon": "^2.0.19"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.19"
+    "sequelize": "^6.21.4"
   }
 }

@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const path = require('path');
 const express = require('express');
 // sets up an Express session and connects the session to our Sequelize db
@@ -27,23 +26,6 @@ cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET
-});
-
-app.post('/api/users/profile', (req, res) => {
-  const profilePicture = req.files?.profilePicture;
-  if (!profilePicture) {
-    return res.status(400).send('No files were uploaded.')
-  }
-  console.log(profilePicture);
-  cloudinary.v2.uploader.upload(profilePicture.tempFilePath)
-    .then((response) => {
-      console.log(response.url);
-      res.send('Successful!');
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Didnt work');
-    })
 });
 
 

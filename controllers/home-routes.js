@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
 
       res.render('homepage', {
         posts,
-        loggedIn: req.session.loggedIn
+        loggedIn: req.session.loggedIn, profile_img: req.session.profile_img
       });
     })
     .catch(err => {
@@ -68,7 +68,7 @@ router.get('/post/:id', (req, res) => {
       },
       {
         model: User,
-        attributes: ['username']
+        attributes: ['username', 'profile_img']
       }
     ]
   })
@@ -82,7 +82,7 @@ router.get('/post/:id', (req, res) => {
 
       res.render('single-post', {
         post,
-        loggedIn: req.session.loggedIn
+        loggedIn: req.session.loggedIn, profile_img: req.session.profile_img
       });
     })
     .catch(err => {

@@ -30,13 +30,18 @@ router.get('/', withAuth, (req, res) => {
       },
       {
         model: User,
-        attributes: ['username']
+        attributes: ['username', 'profile_img']
       }
     ]
   })
     .then(dbPostData => {
       const posts = dbPostData.map(post => post.get({ plain: true }));
-      res.render('dashboard', { posts, loggedIn: true });
+      console.log(req.session);
+      res.render('dashboard', {
+        posts,
+        loggedIn: true,
+        profile_img: req.session.profile_img
+      });
     })
     .catch(err => {
       console.log(err);
@@ -65,7 +70,7 @@ router.get('/edit/:id', withAuth, (req, res) => {
       },
       {
         model: User,
-        attributes: ['username']
+        attributes: ['username', 'profile_img']
       }
     ]
   })
@@ -75,7 +80,8 @@ router.get('/edit/:id', withAuth, (req, res) => {
 
         res.render('edit-post', {
           post,
-          loggedIn: true
+          loggedIn: true,
+          profile_img: req.session.profile_img
         });
       } else {
         res.status(404).end();

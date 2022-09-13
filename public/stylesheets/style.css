@@ -79,7 +79,6 @@ form label {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  /* height: 100vh; */
 }
 
 header {
@@ -133,6 +132,14 @@ main {
   object-fit: cover;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0), 0 6px 36px rgba(0, 0, 0, 0.13);
   border: 3px solid #fff;
+}
+
+.card__title {
+  margin: 0;
+}
+
+.card__job {
+  color: #6e8192;
 }
 
 .card__title {
