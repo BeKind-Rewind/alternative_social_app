@@ -1,6 +1,6 @@
 async function newFormHandler(event) {
   event.preventDefault();
-  
+
   const title = document.querySelector('input[name="post-title"]').value;
   const content = document.querySelector('textarea[name="content"]').value; //*
   const post_url = document.querySelector('input[name="post_url"]').value;
@@ -19,7 +19,7 @@ async function newFormHandler(event) {
 
   if (response.ok) {
     console.log(response)
-    // document.location.replace('/dashboard');
+    document.location.replace('/dashboard');
   } else {
     alert(response.statusText);
   }
