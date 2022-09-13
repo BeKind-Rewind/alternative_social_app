@@ -142,6 +142,9 @@ main {
   color: #6e8192;
 }
 
+.btn-primary {
+  width: auto;
+}
 
 .btn-no-style {
   background: none;
