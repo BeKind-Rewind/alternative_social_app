@@ -111,6 +111,7 @@ main {
 
 .btn-primary {
   background-color: #008cba;
+  width: auto;
 }
 
 .card {
@@ -140,10 +141,6 @@ main {
 
 .card__job {
   color: #6e8192;
-}
-
-.btn-primary {
-  width: auto;
 }
 
 .btn-no-style {
