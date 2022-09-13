@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
   height: 100%;
   padding: 0;
   margin: 0;
@@ -17,7 +18,7 @@ img {
   width: 100%;
 }
 
-.butterfly { 
+.butterfly {
   width: 8%;
 }
 
@@ -45,13 +46,15 @@ button {
   padding: 0;
 }
 
-textarea, input {
+textarea,
+input {
   padding: .5%;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
 
-textarea:focus, input:focus {
+textarea:focus,
+input:focus {
   outline: none;
   border: 1px solid #3486eb;
 }
@@ -61,7 +64,7 @@ textarea {
   min-height: 100px;
 }
 
-form > div {
+form>div {
   margin-bottom: 2%;
 }
 
@@ -76,7 +79,6 @@ form label {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 header {
@@ -107,7 +109,8 @@ main {
 }
 
 .btn-primary {
-    background-color: #008cba;
+  background-color: #008cba;
+  width: auto;
 }
 
 .card {
@@ -120,20 +123,24 @@ main {
 }
 
 .card__image {
-    display: block;
-    margin: 0 auto;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    object-fit: cover;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0), 0 6px 36px rgba(0, 0, 0, 0.13);
-    border: 3px solid #fff;
-  }
+  display: block;
+  margin: 0 auto;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  object-fit: cover;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0), 0 6px 36px rgba(0, 0, 0, 0.13);
+  border: 3px solid #fff;
+}
 
-.card__title { margin: 0; }
+.card__title {
+  margin: 0;
+}
 
-.card__job { color: #6e8192; }
+.card__job {
+  color: #6e8192;
+}
 
 
 
@@ -211,11 +218,11 @@ footer {
 }
 
 .card {
-    margin-bottom: 1em;
-    margin-top: 1em;
+  margin-bottom: 1em;
+  margin-top: 1em;
 }
 
-.rows{
-    display:flex;
-    flex-direction: column;
+.rows {
+  display: flex;
+  flex-direction: column;
 }
