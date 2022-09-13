@@ -23,6 +23,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false
     },
+    profile_img: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "/img/default.png"
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,

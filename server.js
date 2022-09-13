@@ -29,23 +29,6 @@ cloudinary.config({
   api_secret: process.env.API_SECRET 
 });
 
-app.post('/api/users/profile', (req, res)=>{
-  const profilePicture = req.files?.profilePicture;
-  if(!profilePicture) {
-    return res.status(400).send('No files were uploaded.')
-  }
-  console.log(profilePicture);
-  cloudinary.v2.uploader.upload(profilePicture.tempFilePath)
-    .then((response) => {
-      console.log(response.url);
-      res.send('Successful!');
-    })
-    .catch((err)=>{
-      console.error(err);
-      res.status(500).send('Didnt work');
-    })
-});
-
 
 // importing the connection to sequelize from config/connection.js
 const sequelize = require('./config/connection');
