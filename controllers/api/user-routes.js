@@ -96,6 +96,7 @@ router.post('/', (req, res) => {
       req.session.save(() => {
         req.session.user_id = dbUserData.id;
         req.session.username = dbUserData.username;
+        req.session.profile_img = dbUserData.profile_img; // not sure if this wipes a stored profile image
         req.session.loggedIn = true;
 
         res.json(dbUserData);
