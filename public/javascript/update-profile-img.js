@@ -1,5 +1,4 @@
 
-
 const profileUploadForm = document.querySelector("#profile-upload")
 
 profileUploadForm.addEventListener('submit', (event) => {
