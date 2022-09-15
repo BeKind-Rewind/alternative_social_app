@@ -3,10 +3,22 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
 
 ## Description
-SocialMedia Application gathering point to post, discuss and promote all things tech. Once account is created, users are able to create posts and view from their own dashboard. Users may also make and read comments made by others as well as promote up-standing, interesting, and helpful information that benefits the community.
+SocialMedia Application gathering point to post, discuss and promote all things tech. Once account is created, users are able to create posts and view from their own dashboard. Users may also make and read comments made by others as well as promote up-standing, interesting, and helpful information that benefits the community. 
+
+We used new technology npm cloudinary and express-fileupload to add the ability for users to customize their profile picture. 
 
 Deployed App:
 https://intense-stream-74213.herokuapp.com/ 
+
+
+Future development:
+* Pic upload for posts and stored and organized into Albums
+* Video upload/Albums
+* Meme creator/Pic editor
+* Video editor
+* DigitalArt Creator
+* Marketplace
+
 
 ## Table of Contents
   - [Usage](#usage)
@@ -21,27 +33,41 @@ https://intense-stream-74213.herokuapp.com/
 
 
 ## Usage
-Users can post and see posts by others; tag topics of discussion; comment and upvote other's posts. This application uses node.js packages: express, express-handlebars, express-session, connect-session-sequelize, sequelize, mysql2, dotenv, bcrypt, aws-sdk(s3 Bucket), multer. 
+Users can post and see posts by others; tag topics of discussion; comment and upvote other's posts. This application uses node.js packages: express, express-handlebars, express-session, connect-session-sequelize, sequelize, mysql2, dotenv, bcrypt 
 
 
 
 ## Tests
-TBD
+See code for testing files.
 
 
 
 ## Installation
-Install Node.js, Clone DB, in terminal npm init or npm init -y, then npm i <package name> for each 
+Clone the database 
+Install Node.js, 
+in terminal npm init or npm init -y, 
+then npm i <package name> for each: 
+  express, 
+  express-handlebars, 
+  express-fileupload,
+  express-session, 
+  connect-session-sequelize, 
+  sequelize, 
+  mysql2, 
+  dotenv, 
+  bcrypt,
+  cloudinary
+
 
 
 ## Screenshots and Video
-coming soon
-![Alt Text](./images/screenshot.png)
+https://github.com/BeKind-Rewind/alternative_social_app
+https://drive.google.com/file/d/15oFclfVDgyb7_0EHl8oe4AufbXc5NZlo/view
 
 
 
 ## Contributing
-coming soon
+Collaboration with Boyd Roberts (coleyrockin), Vanessa Oja (vanessaoja)
 
 
 
