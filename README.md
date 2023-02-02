@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
 
 ## Description
-SocialMedia Application gathering point to post, discuss and promote all things tech. Once account is created, users are able to create posts and view from their own dashboard. Users may also make and read comments made by others as well as promote up-standing, interesting, and helpful information that benefits the community. 
+Positive SocialMedia environment Application gathering point to post, discuss and promote experiences. Once account is created, users are able to create posts and view from their own dashboard. Users may also make and read upvote comments made by others and set their profile pic. 
 
 We used new technology npm cloudinary and express-fileupload to add the ability for users to customize their profile picture. 
 
