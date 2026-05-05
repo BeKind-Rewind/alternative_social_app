@@ -12,6 +12,8 @@ Vote.init(
     },
     user_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: 'user_post_vote_unique',
       references: {
         model: 'user',
         key: 'id'
@@ -19,6 +21,8 @@ Vote.init(
     },
     post_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: 'user_post_vote_unique',
       references: {
         model: 'post',
         key: 'id'

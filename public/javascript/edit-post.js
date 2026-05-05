@@ -2,26 +2,27 @@ async function editFormHandler(event) {
   event.preventDefault();
 
   const title = document.querySelector('input[name="post-title"]').value.trim();
-  const content = document.querySelector('textarea[name="content"]').value.trim(); //*
+  const content = document.querySelector('textarea[name="content"]').value.trim();
+
+  if (!title || !content) {
+    showToast('Title and content are required.');
+    return;
+  }
 
   const id = window.location.toString().split('/')[
     window.location.toString().split('/').length - 1
   ];
-  const response = await fetch(`/api/posts/${id}`, {
+
+  const response = await apiFetch(`/api/posts/${id}`, {
     method: 'PUT',
-    body: JSON.stringify({
-      title,
-      content
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    body: JSON.stringify({ title, content }),
+    headers: { 'Content-Type': 'application/json' }
   });
 
   if (response.ok) {
     document.location.replace('/dashboard/');
   } else {
-    alert(response.statusText);
+    showToast(await parseApiErrorMessage(response));
   }
 }
 

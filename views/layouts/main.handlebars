@@ -5,8 +5,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{csrfToken}}">
   <title>Alternative social</title>
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascript/ui-feedback.js"></script>
 </head>
 
 <body>
@@ -27,6 +29,7 @@
       </nav>
     </header>
     <main>
+      <div id="toast-root" class="toast-root" aria-live="polite"></div>
       <div class="wrapper">
         {{{ body }}}
       </div>

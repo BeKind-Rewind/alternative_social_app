@@ -1,195 +1,218 @@
 const router = require('express').Router();
-const cloudinary = require('cloudinary');
+const { v2: cloudinary } = require('cloudinary');
 const { User, Post, Comment, Vote } = require('../../models');
 const withAuth = require('../../utils/auth');
+const validateBody = require('../../middleware/validateBody');
+const validateParam = require('../../middleware/validateParam');
+const { parseSignup, parseLogin, parseUserUpdate } = require('../../utils/validation');
 
-// get all users
-router.get('/', (req, res) => {
-  User.findAll({
-    attributes: { exclude: ['password'] }
-  })
-    .then(dbUserData => res.json(dbUserData))
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
-});
+const allowedProfileTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-router.get('/:id', (req, res) => {
-  User.findOne({
-    attributes: { exclude: ['password'] },
-    where: {
-      id: req.params.id
-    },
-    include: [
-      {
-        model: Post,
-        attributes: ['id', 'title', 'post_url', 'content', 'created_at'] //*
-      },
-      {
-        model: Comment,
-        attributes: ['id', 'comment_text', 'created_at'],
-        include: {
-          model: Post,
-          attributes: ['title']
-        }
-      },
-      {
-        model: Post,
-        attributes: ['title'],
-        through: Vote,
-        as: 'voted_posts'
-      }
-    ]
-  })
-    .then(dbUserData => {
-      if (!dbUserData) {
-        res.status(404).json({ message: 'No user found with this id' });
-        return;
-      }
-      res.json(dbUserData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
-});
+function userPublicJson(user) {
+  return {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    profile_img: user.profile_img
+  };
+}
 
-// cloudinary
-router.post('/profile', withAuth, (req, res) => {
-  // using expressfileupload to process the file
-  const profilePicture = req.files?.profilePicture;
-  if (!profilePicture) {
-    return res.status(400).send('No files were uploaded.')
-  }
-  User.findByPk(req.session.user_id)
-    .then((user) => {
-      if (!user) {
-        return res.status(400).send('User does not exist.')
-      }
-      return cloudinary.v2.uploader.upload(profilePicture.tempFilePath)
-        .then((response) => {
-          console.log(response.url);
-          user.profile_img = response.url;
-          req.session.profile_img = response.url;
-          return user.save()
-        })
-        .then(() => {
-          res.send('Successful!');
-        })
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Didnt work');
-    })
-});
-
-
-router.post('/', (req, res) => {
-  // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
-  User.create({
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password
-  })
-    .then(dbUserData => {
-      req.session.save(() => {
-        req.session.user_id = dbUserData.id;
-        req.session.username = dbUserData.username;
-        req.session.profile_img = dbUserData.profile_img; // not sure if this wipes a stored profile image
-        req.session.loggedIn = true;
-
-        res.json(dbUserData);
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
-});
-
-router.post('/login', (req, res) => {
-  // expects {email: 'lernantino@gmail.com', password: 'password1234'}
-  User.findOne({
-    where: {
-      email: req.body.email
-    }
-  }).then(dbUserData => {
-    if (!dbUserData) {
-      res.status(400).json({ message: 'No user with that email address!' });
-      return;
+function startUserSession(req, res, user, payload) {
+  req.session.regenerate((regenerateErr) => {
+    if (regenerateErr) {
+      console.error(regenerateErr);
+      return res.status(500).json({ message: 'Could not start session.' });
     }
 
-    const validPassword = dbUserData.checkPassword(req.body.password);
+    req.session.user_id = user.id;
+    req.session.username = user.username;
+    req.session.profile_img = user.profile_img;
+    req.session.loggedIn = true;
 
-    if (!validPassword) {
-      res.status(400).json({ message: 'Incorrect password!' });
-      return;
-    }
-
-    req.session.save(() => {
-      req.session.user_id = dbUserData.id;
-      req.session.username = dbUserData.username;
-      req.session.profile_img = dbUserData.profile_img;
-      req.session.loggedIn = true;
-
-      res.json({ user: dbUserData, message: 'You are now logged in!' });
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        console.error(saveErr);
+        return res.status(500).json({ message: 'Could not save session.' });
+      }
+      res.json(payload);
     });
   });
+}
+
+// Get all users
+router.get('/', async (req, res) => {
+  try {
+    const dbUserData = await User.findAll({ attributes: { exclude: ['password'] } });
+    res.json(dbUserData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Could not load users.' });
+  }
 });
 
+router.get('/:id', validateParam('id'), async (req, res) => {
+  try {
+    const { id } = req.validatedParams;
+    const dbUserData = await User.findOne({
+      attributes: { exclude: ['password'] },
+      where: { id },
+      include: [
+        { model: Post, attributes: ['id', 'title', 'post_url', 'content', 'created_at'] },
+        {
+          model: Comment,
+          attributes: ['id', 'comment_text', 'created_at'],
+          include: { model: Post, attributes: ['title'] }
+        },
+        { model: Post, attributes: ['title'], through: Vote, as: 'voted_posts' }
+      ]
+    });
 
+    if (!dbUserData) {
+      return res.status(404).json({ message: 'No user found with this id' });
+    }
+    res.json(dbUserData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Could not load user.' });
+  }
+});
+
+// Upload profile picture via Cloudinary
+router.post('/profile', withAuth, async (req, res) => {
+  const profilePicture = req.files?.profilePicture;
+  if (!profilePicture) {
+    return res.status(400).json({ message: 'No files were uploaded.' });
+  }
+
+  if (!allowedProfileTypes.includes(profilePicture.mimetype)) {
+    return res.status(400).json({ message: 'Only image uploads are allowed.' });
+  }
+
+  if (profilePicture.size > 5 * 1024 * 1024) {
+    return res.status(400).json({ message: 'Profile image must be 5MB or smaller.' });
+  }
+
+  try {
+    const user = await User.findByPk(req.session.user_id);
+    if (!user) {
+      return res.status(400).json({ message: 'User does not exist.' });
+    }
+
+    const response = await cloudinary.uploader.upload(profilePicture.tempFilePath, {
+      folder: 'alt-soc-app/profiles',
+      resource_type: 'image'
+    });
+    user.profile_img = response.secure_url;
+    req.session.profile_img = response.secure_url;
+    await user.save();
+
+    res.json({ message: 'Profile image updated successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Upload failed.' });
+  }
+});
+
+// Create a new user
+router.post('/', validateBody(parseSignup), async (req, res) => {
+  try {
+    const { username, email, password } = req.validated;
+
+    const dbUserData = await User.create({
+      username,
+      email,
+      password
+    });
+
+    startUserSession(req, res, dbUserData, userPublicJson(dbUserData));
+  } catch (err) {
+    console.error(err);
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ message: 'That email is already registered.' });
+    }
+    res.status(500).json({ message: 'Could not create account. Please try again.' });
+  }
+});
+
+// Login
+router.post('/login', validateBody(parseLogin), async (req, res) => {
+  try {
+    const { email, password } = req.validated;
+
+    const dbUserData = await User.findOne({ where: { email } });
+
+    if (!dbUserData) {
+      return res.status(400).json({ message: 'No user with that email address!' });
+    }
+
+    const validPassword = dbUserData.checkPassword(password);
+    if (!validPassword) {
+      return res.status(400).json({ message: 'Incorrect password!' });
+    }
+
+    startUserSession(req, res, dbUserData, {
+      user: userPublicJson(dbUserData),
+      message: 'You are now logged in!'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Login failed. Please try again.' });
+  }
+});
+
+// Logout
 router.post('/logout', (req, res) => {
   if (req.session.loggedIn) {
-    req.session.destroy(() => {
-      res.status(204).end();
-    });
-  }
-  else {
+    req.session.destroy(() => res.status(204).end());
+  } else {
     res.status(404).end();
   }
 });
 
-router.put('/:id', (req, res) => {
-  // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
-
-  // pass in req.body instead to only update what's passed through
-  User.update(req.body, {
-    individualHooks: true,
-    where: {
-      id: req.params.id
+// Update user (auth required)
+router.put('/:id', withAuth, validateParam('id'), validateBody(parseUserUpdate), async (req, res) => {
+  try {
+    const { id } = req.validatedParams;
+    if (id !== Number(req.session.user_id)) {
+      return res.status(403).json({ message: 'You can only update your own profile.' });
     }
-  })
-    .then(dbUserData => {
-      if (!dbUserData) {
-        res.status(404).json({ message: 'No user found with this id' });
-        return;
-      }
-      res.json(dbUserData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
+
+    const [affected] = await User.update(req.validated, {
+      individualHooks: true,
+      where: { id }
     });
+
+    if (!affected) {
+      return res.status(404).json({ message: 'No user found with this id' });
+    }
+    res.json({ message: 'Profile updated.', affected });
+  } catch (err) {
+    console.error(err);
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ message: 'That email is already in use.' });
+    }
+    res.status(500).json({ message: 'Could not update profile.' });
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  User.destroy({
-    where: {
-      id: req.params.id
+// Delete user (auth required)
+router.delete('/:id', withAuth, validateParam('id'), async (req, res) => {
+  try {
+    const { id } = req.validatedParams;
+    if (id !== Number(req.session.user_id)) {
+      return res.status(403).json({ message: 'You can only delete your own account.' });
     }
-  })
-    .then(dbUserData => {
-      if (!dbUserData) {
-        res.status(404).json({ message: 'No user found with this id' });
-        return;
-      }
-      res.json(dbUserData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+
+    const dbUserData = await User.destroy({ where: { id } });
+
+    if (!dbUserData) {
+      return res.status(404).json({ message: 'No user found with this id' });
+    }
+    res.json(dbUserData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Could not delete account.' });
+  }
 });
 
 module.exports = router;

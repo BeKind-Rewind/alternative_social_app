@@ -2,15 +2,13 @@ const { Model, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/connection');
 
-// create our User model
 class User extends Model {
-  // set up method to run on instance data (per user) to check password
+  // Check password against stored hash
   checkPassword(loginPw) {
     return bcrypt.compareSync(loginPw, this.password);
   }
 }
 
-// create fields/columns for User model
 User.init(
   {
     id: {
@@ -26,34 +24,31 @@ User.init(
     profile_img: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "/img/default.png"
+      defaultValue: '/img/default.png'
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true
-      }
+      validate: { isEmail: true }
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [4]
-      }
+      validate: { len: [8] } // Bumped minimum from 4 to 8 characters
     }
   },
   {
     hooks: {
-      // set up beforeCreate lifecycle "hook" functionality
       async beforeCreate(newUserData) {
         newUserData.password = await bcrypt.hash(newUserData.password, 10);
         return newUserData;
       },
-
       async beforeUpdate(updatedUserData) {
-        updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+        // Only re-hash the password if it was actually changed
+        if (updatedUserData.changed('password')) {
+          updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+        }
         return updatedUserData;
       }
     },

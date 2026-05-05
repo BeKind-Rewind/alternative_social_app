@@ -1,27 +1,25 @@
 async function newFormHandler(event) {
   event.preventDefault();
 
-  const title = document.querySelector('input[name="post-title"]').value;
-  const content = document.querySelector('textarea[name="content"]').value; //*
-  const post_url = document.querySelector('input[name="post_url"]').value;
+  const title = document.querySelector('input[name="post-title"]').value.trim();
+  const content = document.querySelector('textarea[name="content"]').value.trim();
+  const post_url = document.querySelector('input[name="post_url"]').value.trim();
 
-  const response = await fetch(`/api/posts`, {
+  if (!title || !content || !post_url) {
+    showToast('Title, link, and content are required.');
+    return;
+  }
+
+  const response = await apiFetch('/api/posts', {
     method: 'POST',
-    body: JSON.stringify({
-      title,
-      content,
-      post_url
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    body: JSON.stringify({ title, content, post_url }),
+    headers: { 'Content-Type': 'application/json' }
   });
 
   if (response.ok) {
-    console.log(response)
     document.location.replace('/dashboard');
   } else {
-    alert(response.statusText);
+    showToast(await parseApiErrorMessage(response));
   }
 }
 

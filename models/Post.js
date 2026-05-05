@@ -2,33 +2,44 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 // create our Post model
 class Post extends Model {
-  static upvote(body, models) {
-    return models.Vote.create({
-      user_id: body.user_id,
-      post_id: body.post_id
-    }).then(() => {
-      return Post.findOne({
-        where: {
-          id: body.post_id
-        },
-        attributes: [
-          'id',
-          'title',
-          'post_url',
-          'created_at',
-          [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
-        ],
-        include: [
-          {
-            model: models.Comment,
-            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-            include: {
-              model: models.User,
-              attributes: ['username']
-            }
+  static async upvote(body, models) {
+    const post = await Post.findByPk(body.post_id);
+    if (!post) {
+      return null;
+    }
+
+    await models.Vote.findOrCreate({
+      where: {
+        user_id: body.user_id,
+        post_id: body.post_id
+      },
+      defaults: {
+        user_id: body.user_id,
+        post_id: body.post_id
+      }
+    });
+
+    return Post.findOne({
+      where: {
+        id: body.post_id
+      },
+      attributes: [
+        'id',
+        'title',
+        'post_url',
+        'created_at',
+        [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
+      ],
+      include: [
+        {
+          model: models.Comment,
+          attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+          include: {
+            model: models.User,
+            attributes: ['username']
           }
-        ]
-      });
+        }
+      ]
     });
   }
 }

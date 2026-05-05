@@ -1,47 +1,58 @@
 const router = require('express').Router();
 const { Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
+const validateBody = require('../../middleware/validateBody');
+const validateParam = require('../../middleware/validateParam');
+const { parseCommentCreate } = require('../../utils/validation');
 
-router.get('/', (req, res) => {
-  Comment.findAll()
-    .then(dbCommentData => res.json(dbCommentData))
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+router.get('/', async (req, res) => {
+  try {
+    const dbCommentData = await Comment.findAll();
+    res.json(dbCommentData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Could not load comments.' });
+  }
 });
 
-router.post('/', withAuth, (req, res) => {
-  // expects => {comment_text: "This is the comment", user_id: 1, post_id: 2}
-  Comment.create({
-    comment_text: req.body.comment_text,
-    user_id: req.session.user_id,
-    post_id: req.body.post_id
-  })
-    .then(dbCommentData => res.json(dbCommentData))
-    .catch(err => {
-      console.log(err);
-      res.status(400).json(err);
+router.post('/', withAuth, validateBody(parseCommentCreate), async (req, res) => {
+  try {
+    const { comment_text, post_id } = req.validated;
+
+    const dbCommentData = await Comment.create({
+      comment_text,
+      user_id: req.session.user_id,
+      post_id
     });
+    res.json(dbCommentData);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: 'Could not add comment.' });
+  }
 });
 
-router.delete('/:id', withAuth, (req, res) => {
-  Comment.destroy({
-    where: {
-      id: req.params.id
+router.delete('/:id', withAuth, validateParam('id'), async (req, res) => {
+  try {
+    const { id } = req.validatedParams;
+    const comment = await Comment.findByPk(id);
+    if (!comment) {
+      return res.status(404).json({ message: 'No comment found with this id!' });
     }
-  })
-    .then(dbCommentData => {
-      if (!dbCommentData) {
-        res.status(404).json({ message: 'No comment found with this id!' });
-        return;
-      }
-      res.json(dbCommentData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+
+    if (Number(comment.user_id) !== Number(req.session.user_id)) {
+      return res.status(403).json({ message: 'You can only delete your own comments.' });
+    }
+
+    const dbCommentData = await Comment.destroy({ where: { id } });
+
+    if (!dbCommentData) {
+      return res.status(404).json({ message: 'No comment found with this id!' });
+    }
+    res.json(dbCommentData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Could not delete comment.' });
+  }
 });
 
 module.exports = router;
